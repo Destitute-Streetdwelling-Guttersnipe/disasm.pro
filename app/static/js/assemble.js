@@ -4,12 +4,12 @@ function send_asm_update(){
 }
 
 function update_assembled_prettified(code){
+    console.log(code);
     let output_code = "";
 
     code.forEach(function(code_line){
-        const better_line = Array.from(new Uint8Array(code_line));
-        const hexed_line = better_line.map(function(inp){
-            return ("0"+hexVal).substr(-2).toUpperCase();
+        const hexed_line = code_line.map(function(inp){
+            return ("0"+inp.toString(16)).substr(-2).toUpperCase();
         }).join(' ');
         output_code += hexed_line + "\n";
     });

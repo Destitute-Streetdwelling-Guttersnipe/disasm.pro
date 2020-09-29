@@ -15,7 +15,7 @@ def init_keystone():
 
     for ARCH in keystone_modes:
         current_arch = keystone_modes[ARCH]
-        
+
         if ARCH not in keystone_instances:
             keystone_instances[ARCH] = {}
 
@@ -29,7 +29,7 @@ def init_keystone():
                 current_endian = current_mode['ENDIAN'][ENDIAN]
 
                 keystone_instances[ARCH][MODE][ENDIAN] = Ks(current_arch['VAL'], current_mode['VAL'] + current_endian['VAL'])
-                
+
 
 """
 Receive a JSON Object with data to assemble
@@ -39,12 +39,12 @@ Receive a JSON Object with data to assemble
 def assemble(code):
     try:
         current_settings = get_settings()
-        
+
         try:
             starting_offset = int(current_settings['OFFSET'], 16)
         except:
             starting_offset = int(current_settings['OFFSET'])
-        current_offset = starting_offset 
+        current_offset = starting_offset
 
         #We are gonna do an hack to support labels, since I want line by line assembly and also support labels
         #And labels won't work if we assemble it line by line cuz labels will be on a different lien
@@ -56,7 +56,7 @@ def assemble(code):
         current_endian = current_mode['ENDIAN'][current_settings['ENDIAN']]
 
         current_keystone = Ks(current_arch['VAL'], current_mode['VAL']+current_endian['VAL'])
-        assembled_code = current_keystone.asm_new(code['code'],current_offset)[0] 
+        assembled_code = current_keystone.asm_by_line(code['code'],current_offset)[0]
 
         emit('assembled', assembled_code)
     except Exception as e:
