@@ -1,1 +1,4 @@
+# Ignore files created by flask
 flask_session/*
+# Ignore the virtual environment
+venv/*

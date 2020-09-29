@@ -29,29 +29,36 @@ function update_disassembled_code(code){
 function parse_raw(code){
     //TODO fix this soon 
     let raw_parsed = JSON.parse('"' + code.replace(/\\x/g, "\\u00") + '"'); // A super shitty hack to parse raw strings
-    let machine_parsed = []
+    let machine_parsed = [];
     //conver to array of ints
-    for(chr of raw_parsed)machine_parsed.push(chr.charCodeAt(0))
+    for(chr of raw_parsed) {
+        machine_parsed.push(chr.charCodeAt(0));
+    }
+     
+    //Because of the structure of machine_code_bytes
+    let output_for_machine_bytes = [];
+    output_for_machine_bytes.push(machine_parsed);
 
-    let output_for_machine_bytes = []//Because of the structure of machine_code_bytes
-    output_for_machine_bytes.push(machine_parsed) 
     return output_for_machine_bytes
 }
 
 function parse_prettified(code){
-    let code_splitted = code.split("\n")
-    let machine_parsed = []
+    let code_splitted = code.split("\n");
+    let machine_parsed = [];
     
     code_splitted.forEach(function(code_line) {
         let code_line_p1 = code_line.replace(/\s/g, "");
-        if(code_line_p1.length&1 != 0)throw "Invalid hex"
+        if(code_line_p1.length&1 != 0) {
+            throw "Invalid hex";
+        }
+
         //convert to int array from hex
-        let parsed_hex = []
+        let parsed_hex = [];
         for(let i = 0; i < code_line_p1.length; i+=2){
-           parsed_hex.push(parseInt(code_line_p1.substr(i, 2), 16))
+           parsed_hex.push(parseInt(code_line_p1.substr(i, 2), 16));
         }
         machine_parsed.push(parsed_hex);
-    })
+    });
 
-    return machine_parsed
+    return machine_parsed;
 }

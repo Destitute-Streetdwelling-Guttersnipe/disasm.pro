@@ -8,27 +8,27 @@ from keystone import *
 
 keystone_instances = {}
 
-#Initialize all the keystone instances so we can access them directly based on values in the settings
-# def init_keystone():
-    # global keystone_instances
-    # keystone_instances = {}
+# Initialize all the keystone instances so we can access them directly based on values in the settings
+def init_keystone():
+    global keystone_instances
+    keystone_instances = {}
 
-    # for ARCH in keystone_modes:
-        # current_arch = keystone_modes[ARCH]
+    for ARCH in keystone_modes:
+        current_arch = keystone_modes[ARCH]
         
-        # if ARCH not in keystone_instances:
-            # keystone_instances[ARCH] = {}
+        if ARCH not in keystone_instances:
+            keystone_instances[ARCH] = {}
 
-        # for MODE in current_arch['MODES']:
-            # current_mode = current_arch['MODES'][MODE]
+        for MODE in current_arch['MODES']:
+            current_mode = current_arch['MODES'][MODE]
 
-            # if MODE not in keystone_instances[ARCH]:
-                # keystone_instances[ARCH][MODE] = {}
+            if MODE not in keystone_instances[ARCH]:
+                keystone_instances[ARCH][MODE] = {}
 
-            # for ENDIAN in current_mode['ENDIAN']:
-                # current_endian = current_mode['ENDIAN'][ENDIAN]
+            for ENDIAN in current_mode['ENDIAN']:
+                current_endian = current_mode['ENDIAN'][ENDIAN]
 
-                # keystone_instances[ARCH][MODE][ENDIAN] = Ks(current_arch['VAL'], current_mode['VAL'] + current_endian['VAL'])
+                keystone_instances[ARCH][MODE][ENDIAN] = Ks(current_arch['VAL'], current_mode['VAL'] + current_endian['VAL'])
                 
 
 """
@@ -60,6 +60,7 @@ def assemble(code):
 
         emit('assembled', assembled_code)
     except Exception as e:
+        print("Assmebler error")
         print(e)
-        emit('error', str(e).split("(")[0]) #Super hack to get the first part of a Keystone error message
+        emit('error', "Assembler error: " + str(e).split("(")[0]) #Super hack to get the first part of a Keystone error message
         return

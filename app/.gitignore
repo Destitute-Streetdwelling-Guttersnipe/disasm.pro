@@ -1,1 +1,2 @@
+# Ignore temporary files created by python
 __pycache__/*

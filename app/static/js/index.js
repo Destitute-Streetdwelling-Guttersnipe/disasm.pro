@@ -8,7 +8,7 @@ let socket, asm_editor, machine_editor;
 let mutex_lock = false;
     
 document.body.onload = ()=> {
-    socket = io.connect('http://' + document.domain + ':' + location.port); // SocketIO's socket
+    socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port); // SocketIO's socket
 
     socket.on('assembled', update_assembled_code)
 

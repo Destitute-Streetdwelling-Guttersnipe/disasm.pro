@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs the disasm.pro UWSGI server on port 9000
+After=network.target
+
+[Service]
+WorkingDirectory=/home/blue/disasm.pro
+ExecStart=/home/blue/disasm.pro/venv-run.sh
+
+[Install]
+WantedBy=multi-user.target

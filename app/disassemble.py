@@ -46,8 +46,9 @@ def disassemble(code):
 
         emit('disassembled', output_instructions)
     except Exception as e:
+        print("Disassembler error")
         print(e)
-        emit('error', str(e).split("(")[0]) #Super hack to get the first part of a Keystone error message
+        emit('error', "Disassembler error: " + str(e).split("(")[0]) #Super hack to get the first part of a Keystone error message
         return
 
 
