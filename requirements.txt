@@ -2,6 +2,3 @@ capstone
 flask
 flask-socketio
 flask-session
-gevent
-gevent-websocket
-uwsgi
