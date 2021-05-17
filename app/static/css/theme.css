@@ -1,0 +1,13 @@
+body {
+	font-family: 'Helvetica';
+	line-height: normal;
+	font-size: 1em;
+	background-color: #222;
+	color: #aaa;
+}
+
+@media (min-width: 1921px) {
+	body {
+		font-size: 1.125em;
+	}
+}

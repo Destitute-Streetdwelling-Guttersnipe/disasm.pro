@@ -1,54 +1,55 @@
-function send_machine_update(){
+function send_machine_update() {
     let machine_code_parsed;
     //Remove all non hex things
     let machine_code = machine_editor.getValue();
     //because I throw exceptions when invalid hex, I need to catch em and return 
     try{
-        if(document.getElementById('VIEW').value === "1")
-            machine_code_parsed = parse_prettified(machine_code)
-        else machine_code_parsed = parse_raw(machine_code)
-    }catch (err){
-        return
+        if (document.getElementById('VIEW').value === "1") {
+            machine_code_parsed = parse_prettified(machine_code);
+        } else {
+            machine_code_parsed = parse_raw(machine_code);
+        }
+    } catch (err){
+        return;
     }
     global_settings.machine_code_bytes = JSON.stringify(machine_code_parsed);
 
-    socket.emit('disassemble', {'code':machine_code_parsed})
+//    socket.emit('disassemble', {'code':machine_code_parsed})
 
 }
 
-function update_disassembled_code(code){
+function update_disassembled_code(code) {
     mutex_lock = true;
-    asm_editor.setValue(code,1);
+    asm_editor.setValue(code, 1);
     //Update simultaneously
     let cur_line = machine_editor.selection.getCursor().row;
     asm_editor.selection.moveTo(cur_line, 0);
     mutex_lock = false;
-    set_success_message("Code Disassembled")
+    set_success_message("Code Disassembled");
 }
 
-function parse_raw(code){
-    //TODO fix this soon 
-    let raw_parsed = JSON.parse('"' + code.replace(/\\x/g, "\\u00") + '"'); // A super shitty hack to parse raw strings
+function parse_raw(code) {
+    // A super shitty hack to parse raw strings
+    // TODO: fix this soon 
+    let raw_parsed = JSON.parse('"' + code.replace(/\\x/g, "\\u00") + '"');
     let machine_parsed = [];
+
     //conver to array of ints
     for(chr of raw_parsed) {
         machine_parsed.push(chr.charCodeAt(0));
     }
      
     //Because of the structure of machine_code_bytes
-    let output_for_machine_bytes = [];
-    output_for_machine_bytes.push(machine_parsed);
-
-    return output_for_machine_bytes
+    return [machine_parsed];
 }
 
-function parse_prettified(code){
-    let code_splitted = code.split("\n");
+function parse_prettified(code) {
+    let code_by_line = code.split("\n");
     let machine_parsed = [];
     
-    code_splitted.forEach(function(code_line) {
+    code_by_line.forEach((code_line) => {
         let code_line_p1 = code_line.replace(/\s/g, "");
-        if(code_line_p1.length&1 != 0) {
+        if(code_line_p1.length % 2 !== 0) {
             throw "Invalid hex";
         }
 
