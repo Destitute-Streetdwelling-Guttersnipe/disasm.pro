@@ -1,66 +1,51 @@
-from flask import session
-from flask_socketio import emit
-from . import ninja_socketio
+from flask import request
+from keystone import Ks
+
 from .settings import get_settings
 from .constants import keystone_modes
-from .disassemble import capstone_instances
-from keystone import *
+
 
 keystone_instances = {}
 
-# Initialize all the keystone instances so we can access them directly based on values in the settings
+# Initialize all the keystone instances so we can access them directly later on
 def init_keystone():
     global keystone_instances
     keystone_instances = {}
 
     for ARCH in keystone_modes:
-        current_arch = keystone_modes[ARCH]
+        arch = keystone_modes[ARCH]
+        arch_val = arch['KS_VAL']
 
         if ARCH not in keystone_instances:
             keystone_instances[ARCH] = {}
 
-        for MODE in current_arch['MODES']:
-            current_mode = current_arch['MODES'][MODE]
+        for MODE in arch['MODES']:
+            mode = arch['MODES'][MODE]
+            mode_val = mode['KS_VAL']
 
             if MODE not in keystone_instances[ARCH]:
                 keystone_instances[ARCH][MODE] = {}
 
-            for ENDIAN in current_mode['ENDIAN']:
-                current_endian = current_mode['ENDIAN'][ENDIAN]
+            for ENDIAN in mode['ENDIAN']:
+                endian = mode['ENDIAN'][ENDIAN]
+                endian_val = endian['KS_VAL']
 
-                keystone_instances[ARCH][MODE][ENDIAN] = Ks(current_arch['VAL'], current_mode['VAL'] + current_endian['VAL'])
+                keystone_instances[ARCH][MODE][ENDIAN] = Ks(arch_val, mode_val + endian_val)
 
 
-"""
-Receive a JSON Object with data to assemble
-"""
+def assemble(code, arch, mode, endian, offset):
+    """
+    Attempt to assemble code (as a string) with the specified settings.
 
-@ninja_socketio.on('assemble')
-def assemble(code):
+    Returns `True, assembled_code` on success, and `False, error` on failure.
+    """
     try:
-        current_settings = get_settings()
+        keystone = keystone_instances[arch][mode][endian]
+        assembled_code = keystone.asm_by_line(code, offset)[0]
 
-        try:
-            starting_offset = int(current_settings['OFFSET'], 16)
-        except:
-            starting_offset = int(current_settings['OFFSET'])
-        current_offset = starting_offset
-
-        #We are gonna do an hack to support labels, since I want line by line assembly and also support labels
-        #And labels won't work if we assemble it line by line cuz labels will be on a different lien
-        #So, I'm gonna first assemble it all at once, and then assemble each line, catching any symbol exceptions for labels
-        #I'll then disassemble the originally assembled code code at that point to get the the instruction that uses the label and add it
-
-        current_arch = keystone_modes[current_settings['ARCH']]
-        current_mode = current_arch['MODES'][current_settings['MODE']]
-        current_endian = current_mode['ENDIAN'][current_settings['ENDIAN']]
-
-        current_keystone = Ks(current_arch['VAL'], current_mode['VAL']+current_endian['VAL'])
-        assembled_code = current_keystone.asm_by_line(code['code'],current_offset)[0]
-
-        emit('assembled', assembled_code)
+        return True, assembled_code
     except Exception as e:
-        print("Assmebler error")
-        print(e)
-        emit('error', "Assembler error: " + str(e).split("(")[0]) #Super hack to get the first part of a Keystone error message
-        return
+        print("Assembler error")
+        traceback.print_exc()
+        #Super hack to get the first part of a Keystone error message
+        return False, "Error assembling: " + str(e).split("(")[0]
