@@ -38,9 +38,10 @@ document.body.onload = ()=> {
 
     asm_editor.session.on('change', (delta) => {
         global_settings.asm_code = asm_editor.getValue();
-        if (mutex_lock) return; //A lock here is neede because setValue of ace editor fires onchange event
+        //A lock here is neede because setValue of ace editor fires onchange event
+        if (mutex_lock) return; 
         global_settings.last_focus = 0;
-        send_asm_update();
+        assemble();
     });
 
     machine_editor.session.on('change', (delta) => {
@@ -221,15 +222,6 @@ function sync_settings_local() {
     set_view(global_settings['VIEW']);
 }
 
-function set_success_message(msg) {
-    set_message("Success", msg);
-}
-
-function set_error_message(msg) {
-    set_message("Error", msg);
-}
-
-function set_message(idnt, val) {
-    let message = idnt + ": " + val
+function set_message(message) {
     document.getElementById('msg-box').innerText = message;    
 }

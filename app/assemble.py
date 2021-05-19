@@ -1,5 +1,6 @@
 from flask import request
 from keystone import Ks
+import traceback
 
 from .settings import get_settings
 from .constants import keystone_modes
@@ -43,7 +44,9 @@ def assemble(code, arch, mode, endian, offset):
         keystone = keystone_instances[arch][mode][endian]
         assembled_code = keystone.asm_by_line(code, offset)[0]
 
-        return True, assembled_code
+        # Convert from bytes to lists of integers. Avoids encoding errors but
+        # takes up a bit more space, oh well
+        return True, [list(line) for line in assembled_code]
     except Exception as e:
         print("Assembler error")
         traceback.print_exc()

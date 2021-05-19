@@ -20,7 +20,7 @@ DEFAULT_SETTINGS = {
     'VIEW': '1'
 }
 
-def get_settings(request):
+def get_settings():
     if hasattr(request, 'form') and 'settings' in request.form:
         settings = json.loads(request.form['settings'])
     elif 'settings' in session:

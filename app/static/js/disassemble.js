@@ -1,7 +1,7 @@
 function send_machine_update() {
     let machine_code_parsed;
     //Remove all non hex things
-    let machine_code = machine_editor.getValue();
+    const machine_code = machine_editor.getValue();
     //because I throw exceptions when invalid hex, I need to catch em and return 
     try{
         if (document.getElementById('VIEW').value === "1") {
@@ -12,7 +12,7 @@ function send_machine_update() {
     } catch (err){
         return;
     }
-    global_settings.machine_code_bytes = JSON.stringify(machine_code_parsed);
+    global_settings.machine_code_bytes = machine_code_parsed;
 
 //    socket.emit('disassemble', {'code':machine_code_parsed})
 

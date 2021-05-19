@@ -1,5 +1,6 @@
 from flask import Flask, session, request, jsonify
-from . import assemble, disassemble, settings
+from . import assemble, disassemble
+from .settings import get_settings, set_settings
 
 app = Flask(__name__)
 
@@ -12,13 +13,13 @@ assemble.init_keystone()
 disassemble.init_capstone()
 
 # Add all routes
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
 
 @app.route('/assemble', methods=['POST', 'PUT'])
 def do_assemble():
-    settings = settings.get_settings()
+    settings = get_settings()
     arch = settings['ARCH']
     mode = settings['MODE']
     endian = settings['ENDIAN']
@@ -39,7 +40,7 @@ def do_assemble():
 
 @app.route('/disassemble', methods=['POST', 'PUT'])
 def do_disassemble():
-    settings = settings.get_settings()
+    settings = get_settings()
     arch = settings['ARCH']
     mode = settings['MODE']
     endian = settings['ENDIAN']
@@ -63,6 +64,6 @@ def update_settings():
     if 'settings' not in request.form:
         return {'error': "Updated settings not included in request"}, 400
 
-    settings.set_settings(json.loads(request.form['settings']))
+    set_settings(json.loads(request.form['settings']))
     return {'ok': "done"}, 200
 
