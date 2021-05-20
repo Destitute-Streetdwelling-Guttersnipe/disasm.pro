@@ -69,5 +69,12 @@ function update_assembled(response) {
  * the page. */
 function assemble() {
     let asm_code = asm_editor.getValue();
-    ajaxPost("/assemble", {'code': asm_code}, update_assembled);
+    ajaxPost(
+        "/assemble",
+        {
+            'code': asm_code,
+            'settings': JSON.stringify(get_settings())
+        },
+        update_assembled
+    );
 }

@@ -36,19 +36,29 @@ document.body.onload = ()=> {
         update_assembled_code(JSON.parse(global_settings.machine_code_bytes));
     })
 
-    asm_editor.session.on('change', (delta) => {
-        global_settings.asm_code = asm_editor.getValue();
-        //A lock here is neede because setValue of ace editor fires onchange event
-        if (mutex_lock) return; 
-        global_settings.last_focus = 0;
-        assemble();
+    asm_editor.commands.addCommand({
+        name: "assemble",
+        bindKey: {win: 'Ctrl-Enter', mac: 'Command-Enter'},
+        exec: (editor) => {
+            global_settings.asm_code = editor.getValue();
+            //A lock here is neede because setValue of ace editor fires onchange event
+            if (mutex_lock) return; 
+            global_settings.last_focus = 0;
+            assemble();
+        },
+        readOnly: true
     });
 
-    machine_editor.session.on('change', (delta) => {
-        global_settings.machine_code = machine_editor.getValue();
-        if (mutex_lock) return;
-        global_settings.last_focus = 1;
-        send_machine_update();
+    machine_editor.commands.addCommand({
+        name: "disassemble",
+        bindKey: {win: 'Ctrl-Enter', mac: 'Command-Enter'},
+        exec: (editor) => {
+            global_settings.machine_code = machine_editor.getValue();
+            if (mutex_lock) return;
+            global_settings.last_focus = 1;
+            disassemble();
+        },
+        readOnly: true
     });
 
     easydropdown.all({
@@ -56,8 +66,6 @@ document.body.onload = ()=> {
             liveUpdates: true
         }
     });
-
-
 }
 
 function init_settings() {
@@ -77,7 +85,7 @@ function init_settings() {
 
         global_settings.asm_code = "mov rax, 0x0\n";
         global_settings.machine_code = "48 C7 C0 00 00 00 00\n"
-        global_settings.machine_code_bytes = "[[0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00]]" 
+        global_settings.machine_code_bytes = [[0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00]]
         global_settings.last_focus = 0 // 0 means on the asm editor and 1 means on the machine editor
     }
 
@@ -107,26 +115,30 @@ function init_settings() {
     machine_editor.session.setValue(global_settings.machine_code);
     
     sync_settings_local();
-
     update_settings_to_server();
+    set_message("Initialized: Ready");
+}
 
-    set_message("Initialized", "Ready");
+function get_settings() {
+    current_settings = settings_skeleton;
+
+    for (const key in current_settings){
+        if (current_settings.hasOwnProperty(key)) {
+            current_settings[key] = global_settings[key];
+        }
+    }
+
+    return current_settings;
 }
 
 function update_settings_to_server() {
-    current_settings = settings_skeleton;
-
-    for (key in current_settings){
-        current_settings[key] = global_settings[key]
-    }
-
-    // socket.emit('update_settings', current_settings)
-
-    if(global_settings.last_focus === 0) {
-        send_asm_update();
-    } else {
-        send_machine_update();
-    }
+    ajaxPost("/update_settings", {'settings': JSON.stringify(get_settings())}, _ => {
+        if(global_settings.last_focus === 0) {
+            assemble();
+        } else {
+            disassemble();
+        }
+    });
 }
 
 function clear_option_element(element) {

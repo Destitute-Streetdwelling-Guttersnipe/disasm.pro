@@ -1,6 +1,7 @@
 from flask import request
 from capstone import Cs
 import json
+import traceback
 
 from .settings import get_settings
 from .constants import keystone_modes

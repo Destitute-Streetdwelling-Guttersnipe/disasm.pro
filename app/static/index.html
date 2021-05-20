@@ -24,8 +24,6 @@
 			<option value="ARCH_ARM">Arch: ARM</option>
 			<option value="ARCH_ARM64">Arch: ARM64</option>
 			<option value="ARCH_MIPS">Arch: MIPS</option>
-			<option value="ARCH_PPC">Arch: PowerPC</option>
-			<option value="ARCH_SPARC">Arch: Sparc</option>
 		</select>
 	</nav>
 	<nav class="custom-mode" id="MODE-container">
@@ -47,7 +45,6 @@
 		</select>
 	</nav>
 </header>
-
 <main>
 	<div class="w3-row-padding">
 		<div class="w3-col" style="width:50%">
@@ -58,13 +55,15 @@
 		</div>
 	</div>
 </main>
-<div class="bottomcontainer">
-<div id="filler" style="min-width: 20%">
-</div>
-<div id="msg-box" class="w3-code errorbox">
-Initializing...
-</div>
-</div>
-<!-- Footer -->
+<footer class="bottomcontainer">
+		<div id="instr-box" class="w3-code instrbox">
+		Press Ctrl+Enter to assemble/disassemble
+		</div>
+		<div id="filler" style="min-width: 20%">
+		</div>
+		<div id="msg-box" class="w3-code errorbox">
+		Initializing...
+		</div>
+</footer>
 </body>
 </html>
