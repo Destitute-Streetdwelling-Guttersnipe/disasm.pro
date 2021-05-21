@@ -5,6 +5,9 @@ frameworkVersion: '2'
 custom:
   wsgi:
     app: app.app
+  pythonRequirements:
+    dockerizePip: true
+    dockerFile: ./Dockerfile
 
 provider:
   name: aws
