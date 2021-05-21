@@ -2,3 +2,9 @@
 flask_session/*
 # Ignore the virtual environment
 venv/*
+# Ignore Serverless's files
+package-lock.json
+node_modules/*
+.serverless/*
+# Ignore python temporary files
+__pycache__/*

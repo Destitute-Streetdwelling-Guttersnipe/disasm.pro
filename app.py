@@ -1,7 +1,7 @@
-from flask import Flask, session, request, jsonify
+from flask import Flask, request, jsonify
 import json
-from . import assemble, disassemble
-from .settings import get_settings, set_settings
+from disasm import assemble, disassemble
+from disasm.settings import get_settings, set_settings
 
 app = Flask(__name__)
 

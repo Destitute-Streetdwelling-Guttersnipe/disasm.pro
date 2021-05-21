@@ -1,6 +1,6 @@
 [submodule "keystone"]
 	path = keystone
 	url = https://github.com/ret2got/keystone
-[submodule "app/static/js/libs/ace"]
-	path = app/static/js/libs/ace
+[submodule "static/js/libs/ace"]
+	path = static/js/libs/ace
 	url = https://github.com/ajaxorg/ace-builds.git
