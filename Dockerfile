@@ -1,7 +1,7 @@
 FROM ubuntu:20.04 AS build
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq git python python3 cmake && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq git python3 python3-distutils python3-setuptools python3-pip build-essential cmake && \
     mkdir /tools
 
 ADD keystone /build/keystone
@@ -16,4 +16,5 @@ ADD requirements.txt /
 
 RUN /bin/bash -c "cd / && pip3 install -r requirements.txt"
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-l", "-c"]
+CMD ["ls", "-la", "/"]

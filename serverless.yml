@@ -6,8 +6,15 @@ custom:
   wsgi:
     app: app.app
   pythonRequirements:
-    dockerizePip: true
     dockerFile: ./Dockerfile
+
+package:
+  patterns:
+    - '!flask_session/**'
+    - '!venv/**'
+    - '!keystone/**'
+    - '!venv-run.sh'
+    - 'static/js/libs/ace/src-min-noconflict/ace.js'
 
 provider:
   name: aws
