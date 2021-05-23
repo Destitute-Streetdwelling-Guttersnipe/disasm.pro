@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify
 import json
 from disasm import assemble, disassemble
-from disasm.settings import get_settings, set_settings
+from disasm.settings import get_settings
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'anevenmoreseceterskey'
-#app.config['SESSION_TYPE'] = 'filesystem'
 
 # Init the *stones
 assemble.init_keystone()
@@ -57,12 +56,4 @@ def do_disassemble():
         return {'ok': output}, 200
     else:
         return {'error': output}, 500
-
-@app.route('/update_settings', methods=['POST', 'PUT'])
-def update_settings():
-    if 'settings' not in request.form:
-        return {'error': "Updated settings not included in request"}, 400
-
-    set_settings(json.loads(request.form['settings']))
-    return {'ok': "done"}, 200
 

@@ -70,7 +70,7 @@ function update_assembled(response) {
 function assemble() {
     let asm_code = asm_editor.getValue();
     ajaxPost(
-        "/assemble",
+        "assemble",
         {
             'code': asm_code,
             'settings': JSON.stringify(get_settings())

@@ -1,16 +1,7 @@
-from flask import request, session
+from flask import request
 import copy
 import json
 
-from  .constants import keystone_modes
-
-#This is basically the management of user's assembler/disassemblers config options
-
-def set_settings(new_settings):
-    """
-    Set the global session settings
-    """
-    session['settings'] = copy.copy(new_settings)
 
 DEFAULT_SETTINGS = {
     'ARCH': 'ARCH_X86',
@@ -23,8 +14,6 @@ DEFAULT_SETTINGS = {
 def get_settings():
     if hasattr(request, 'form') and 'settings' in request.form:
         settings = json.loads(request.form['settings'])
-    elif 'settings' in session:
-        settings = session['settings']
     else:
         settings = DEFAULT_SETTINGS
     settings = copy.copy(settings)

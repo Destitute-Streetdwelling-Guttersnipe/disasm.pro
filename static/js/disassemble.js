@@ -67,10 +67,10 @@ function disassemble() {
         set_message("Error disassembling: invalid hex present");
         return;
     }
-    global_settings.machine_code_bytes = machine_code_parsed;
+    global_settings.machine_code_bytes = JSON.stringify(machine_code_parsed);
 
     ajaxPost(
-        "/disassemble",
+        "disassemble",
         {
             'raw': JSON.stringify(machine_code_parsed),
             'settings': JSON.stringify(get_settings()),

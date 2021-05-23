@@ -13,22 +13,18 @@ document.body.onload = ()=> {
 
     document.getElementById('ARCH').addEventListener('change', () => {
         set_arch(document.getElementById('ARCH').value);
-        update_settings_to_server();
     })
     
     document.getElementById('MODE').addEventListener('change', () => {
         set_mode(document.getElementById('MODE').value);
-        update_settings_to_server();
     })
 
     document.getElementById('ENDIAN').addEventListener('change', () => {
         set_endian(document.getElementById('ENDIAN').value);
-        update_settings_to_server();
     })
 
     document.getElementById('OFFSET').addEventListener('change', () => {
         set_offset(document.getElementById('OFFSET').value);
-        update_settings_to_server();
     })
     
     document.getElementById('VIEW').addEventListener('change', () => {
@@ -115,7 +111,6 @@ function init_settings() {
     machine_editor.session.setValue(global_settings.machine_code);
     
     sync_settings_local();
-    update_settings_to_server();
     set_message("Initialized: Ready");
 }
 
@@ -129,16 +124,6 @@ function get_settings() {
     }
 
     return current_settings;
-}
-
-function update_settings_to_server() {
-    ajaxPost("/update_settings", {'settings': JSON.stringify(get_settings())}, _ => {
-        if(global_settings.last_focus === 0) {
-            assemble();
-        } else {
-            disassemble();
-        }
-    });
 }
 
 function clear_option_element(element) {
