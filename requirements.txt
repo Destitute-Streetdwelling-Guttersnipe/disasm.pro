@@ -1,3 +1,5 @@
 capstone
-Flask==1.1.2
-werkzeug
+flask==1.1.4
+serverless-wsgi
+werkzeug<2
+awslambdaric

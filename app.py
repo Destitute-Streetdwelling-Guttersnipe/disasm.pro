@@ -4,10 +4,8 @@ from disasm import assemble, disassemble
 from disasm.settings import get_settings, set_settings
 
 app = Flask(__name__)
-
-#Config settings
 app.config['SECRET_KEY'] = 'anevenmoreseceterskey'
-app.config['SESSION_TYPE'] = 'filesystem'
+#app.config['SESSION_TYPE'] = 'filesystem'
 
 # Init the *stones
 assemble.init_keystone()
