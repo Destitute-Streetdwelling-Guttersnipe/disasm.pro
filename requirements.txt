@@ -4,3 +4,4 @@ flask-socketio
 flask-session
 gevent
 uwsgi
+gevent-websocket

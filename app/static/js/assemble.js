@@ -3,24 +3,33 @@ function send_asm_update(){
     socket.emit('assemble', {'code':asm_code})
 }
 
-function update_assembled_prettified(code){
-    output_code = "";
+function update_assembled_prettified(code) {
 
-    code.forEach(function(code_line){
-        hexed_line = code_line.map(function(inp){return ("0"+inp.toString(16)).substr(-2).toUpperCase()}).join(' ')
-        output_code += hexed_line + "\n"
-    })
+    if(typeof code !== "undefined") {
+        const output_code = code
+            .map((code_line) => 
+                // Convert string characters to bytes
+                Array.from(new Uint8Array(code_line)).map((inp) =>
+                    // Prefix 1-digit hex numbers with 0, make uppercase
+                    ("0"+inp.toString(16)).substr(-2).toUpperCase()
+                // Separate bytes on a line by ' '
+                ).join(' ')
+            )
+            // Separate lines by '\n'
+            .join('\n');
 
-    mutex_lock = true
-    machine_editor.setOption("wrap", false); //Don't wrap
-    machine_editor.setValue(output_code, 1);
-    //move cursor simultaneously
-    let cur_line = asm_editor.selection.getCursor().row;
-    machine_editor.selection.moveTo(cur_line, 0);
+        // Take a lock so this update doesn't trigger a disassembly
+        mutex_lock = true;
 
-    mutex_lock = false;
+        machine_editor.setOption("wrap", false);
+        machine_editor.setValue(output_code, 1);
+        const cur_line = asm_editor.selection.getCursor().row;
+        machine_editor.selection.moveTo(cur_line, 0);
 
+        mutex_lock = false;
+    }
 }
+
 
 function update_assembled_raw(code){
     let output_code = ""
