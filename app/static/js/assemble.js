@@ -6,6 +6,8 @@ function send_asm_update(){
 function update_assembled_prettified(code) {
 
     if(typeof code !== "undefined") {
+        /////
+        // code taken from https://github.com/duvallj/disasm.pro
         const output_code = code
             .map((code_line) => 
                 // Convert string characters to bytes
@@ -27,6 +29,7 @@ function update_assembled_prettified(code) {
         machine_editor.selection.moveTo(cur_line, 0);
 
         mutex_lock = false;
+        /////
     }
 }
 
